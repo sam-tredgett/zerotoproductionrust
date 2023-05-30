@@ -80,3 +80,6 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         );
     }
 }
+
+#[tokio::test]
+async fn subscribe_persists_email_to_db() {}
