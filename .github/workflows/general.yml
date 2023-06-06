@@ -94,7 +94,7 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: postgres
         ports:
-          - 5432:5432
+          - 2345:2345
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
