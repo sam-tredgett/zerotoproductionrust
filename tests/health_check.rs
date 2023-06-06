@@ -10,8 +10,6 @@ pub struct TestApp {
     pub db_pool: PgPool,
 }
 
-
-
 async fn spawn_app()  -> TestApp {
     let listener = TcpListener::bind("127.0.0.1:0")
         .expect("Failed to bind to random port");
