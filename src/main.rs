@@ -1,15 +1,16 @@
 use std::net::TcpListener;
+use secrecy::ExposeSecret;
 use sqlx::PgPool;
 use zerotoproduction::{startup::run, configuration::get_configuration, telemetry::get_subscriber, telemetry::init_subscriber};
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let subscriber = get_subscriber("zerotoproduction".into(), "info".into());
+    let subscriber = get_subscriber("zerotoproduction".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
 
     let configuration = get_configuration().expect("Failed to read configuration");
     let connection_pool = PgPool::connect(
-        &configuration.database.connection_string()
+        &configuration.database.connection_string().expose_secret()
         )
         .await
         .expect("Failed to connecto Postgres.");
