@@ -1,17 +1,17 @@
+use once_cell::sync::Lazy;
+use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
-use sqlx::{PgPool, PgConnection, Connection, Executor};
 use zerotoproduction::configuration::{get_configuration, DatabaseSettings};
 use zerotoproduction::startup::run;
 use zerotoproduction::telemetry::{get_subscriber, init_subscriber};
-use once_cell::sync::Lazy;
 
 pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
 }
 
-static TRACING: Lazy<()> = Lazy::new( || {
+static TRACING: Lazy<()> = Lazy::new(|| {
     let default_filter_level = "info".to_string();
     let subscriber_name = "test".to_string();
 
@@ -24,11 +24,10 @@ static TRACING: Lazy<()> = Lazy::new( || {
     }
 });
 
-async fn spawn_app()  -> TestApp {
+async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
 
-    let listener = TcpListener::bind("127.0.0.1:0")
-        .expect("Failed to bind to random port");
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind to random port");
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
@@ -39,34 +38,32 @@ async fn spawn_app()  -> TestApp {
     let server = run(listener, pool.clone()).expect("Failed to bind address");
     let _ = tokio::spawn(server);
     TestApp {
-        address, 
-        db_pool: pool, 
+        address,
+        db_pool: pool,
     }
 }
 
-
 pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
-   let mut connection = PgConnection::connect_with(&config.without_db())
-       .await 
-       .expect("Failed to connect to Postgres.");
-   connection
+    let mut connection = PgConnection::connect_with(&config.without_db())
+        .await
+        .expect("Failed to connect to Postgres.");
+    connection
         .execute(format!(r#"CREATE DATABASE "{}";"#, config.database_name).as_str())
         .await
         .expect("Failed to create database.");
 
-   // migrate db 
-   let connection_pool = PgPool::connect_with(config.with_db())
-       .await
-       .expect("Failed to migrate the database.");
+    // migrate db
+    let connection_pool = PgPool::connect_with(config.with_db())
+        .await
+        .expect("Failed to migrate the database.");
 
-   sqlx::migrate!("./migrations")
-       .run(&connection_pool)
-       .await
-       .expect("Failed to migrate the database");
+    sqlx::migrate!("./migrations")
+        .run(&connection_pool)
+        .await
+        .expect("Failed to migrate the database");
 
-   connection_pool 
+    connection_pool
 }
-
 
 #[tokio::test]
 async fn health_check_works() {
@@ -76,7 +73,7 @@ async fn health_check_works() {
 
     // Act
     let response = client
-        .get( &format!("{}/health_check", &app.address))
+        .get(&format!("{}/health_check", &app.address))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -92,7 +89,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     let app = spawn_app().await;
     let client = reqwest::Client::new();
 
-    // Act 
+    // Act
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
     let response = client
         .post(&format!("{}/subscriptions", &app.address))
@@ -101,7 +98,6 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .send()
         .await
         .expect("Failed to execute request");
-
 
     // Assert
     assert_eq!(200, response.status().as_u16());
@@ -113,7 +109,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
 
     assert_eq!(saved.email, "ursula_le_guin@gmail.com");
     assert_eq!(saved.name, "le guin");
- }
+}
 
 #[tokio::test]
 async fn subscribe_returns_a_400_when_data_is_missing() {
@@ -123,7 +119,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_cases = vec![
         ("name=le%20guin", "missing the email"),
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
-        ("", "missing both name and email")
+        ("", "missing both name and email"),
     ];
 
     for (invalid_body, error_message) in test_cases {
@@ -145,4 +141,3 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         );
     }
 }
-
