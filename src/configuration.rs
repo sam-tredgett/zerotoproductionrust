@@ -1,6 +1,9 @@
-use secrecy::{Secret, ExposeSecret};
+use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
-use sqlx::{postgres::{PgConnectOptions, PgSslMode}, ConnectOptions};
+use sqlx::{
+    postgres::{PgConnectOptions, PgSslMode},
+    ConnectOptions,
+};
 
 #[derive(serde::Deserialize)]
 pub struct Settings {
@@ -26,11 +29,8 @@ pub struct DatabaseSettings {
     pub require_ssl: bool,
 }
 
-
-
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-    let base_path = std::env::current_dir()
-        .expect("Failed to determine current directory");
+    let base_path = std::env::current_dir().expect("Failed to determine current directory");
     let configuration_directory = base_path.join("configuration");
 
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
@@ -40,16 +40,16 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
     let environment_filename = format!("{}.yaml", environment.as_str());
     let settings = config::Config::builder()
-        .add_source(
-            config::File::from(configuration_directory.join("base.yaml"))
-        )
-        .add_source(
-            config::File::from(configuration_directory.join(environment_filename))
-        )
+        .add_source(config::File::from(
+            configuration_directory.join("base.yaml"),
+        ))
+        .add_source(config::File::from(
+            configuration_directory.join(environment_filename),
+        ))
         .add_source(
             config::Environment::with_prefix("APP")
-            .prefix_separator("_")
-            .separator("__")
+                .prefix_separator("_")
+                .separator("__"),
         )
         .build()?;
 
@@ -60,7 +60,6 @@ pub enum Environment {
     Local,
     Production,
 }
-
 
 impl Environment {
     pub fn as_str(&self) -> &'static str {
@@ -79,10 +78,10 @@ impl TryFrom<String> for Environment {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
             other => Err(format!(
-                    "{} is not a supported environment. \
-                    Use either 'local' or 'production'.",
-                    other
-                    )),
+                "{} is not a supported environment. \
+                Use either 'local' or 'production'.",
+                other
+            )),
         }
     }
 }
