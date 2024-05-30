@@ -1,3 +1,1 @@
 # zerotoproductionrust
-
-In progress...
