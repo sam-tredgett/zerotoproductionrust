@@ -39,9 +39,8 @@ features = [
     "macros",
     "postgres",
     "uuid",
-    "chrono",
     "migrate",
-    "offline",
+    "chrono",
 ]
 
 [dependencies.reqwest]
