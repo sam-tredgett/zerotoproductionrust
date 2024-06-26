@@ -41,7 +41,7 @@ async fn subscribe_persists_the_new_subscriber() {
 
     assert_eq!(saved.email, "ursula_le_guin@gmail.com");
     assert_eq!(saved.name, "le guin");
-    assert_eq!(saved.status, "pending_confirmation");
+    assert_eq!(saved.status, Some("pending_confirmation".to_string()));
 }
 
 #[tokio::test]
