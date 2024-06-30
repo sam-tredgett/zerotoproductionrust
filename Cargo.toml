@@ -1,6 +1,6 @@
 [package]
 name = "zerotoproduction"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["dabi-ngin"]
 edition = "2021"
 
@@ -37,7 +37,8 @@ sqlx = { version = "0.6.2", features = [
     "uuid",
     "macros",
     "offline",
-] }
+]}
+rand = {version = "0.8", features = ["std_rng"]}
 
 [dependencies.reqwest]
 version = "0.11"

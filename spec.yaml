@@ -18,7 +18,7 @@ services:
     envs:
       - key: APP_DATABASE__USERNAME
         scope: RUN_TIME
-        value: ${newsletter.USERNAME}
+        value: ${APP_URL}
       - key: APP_DATABASE__PASSWORD
         scope: RUN_TIME
         value: ${newsletter.PASSWORD}

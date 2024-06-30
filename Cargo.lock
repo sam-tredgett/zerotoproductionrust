@@ -2957,7 +2957,7 @@ checksum = "2a0956f1ba7c7909bfb66c2e9e4124ab6f6482560f6628b5aaeba39207c9aad9"
 
 [[package]]
 name = "zerotoproduction"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "actix-web",
  "chrono",
@@ -2970,6 +2970,7 @@ dependencies = [
  "once_cell",
  "quickcheck",
  "quickcheck_macros",
+ "rand 0.8.5",
  "reqwest",
  "secrecy",
  "serde",
