@@ -12,6 +12,8 @@ path = "src/main.rs"
 name = "zerotoproduction"
 
 [dependencies]
+thiserror = "1"
+anyhow = "1"
 unicode-segmentation = "1"
 actix-web = "4"
 config = "0.13"
@@ -37,8 +39,8 @@ sqlx = { version = "0.6.2", features = [
     "uuid",
     "macros",
     "offline",
-]}
-rand = {version = "0.8", features = ["std_rng"]}
+] }
+rand = { version = "0.8", features = ["std_rng"] }
 
 [dependencies.reqwest]
 version = "0.11"
