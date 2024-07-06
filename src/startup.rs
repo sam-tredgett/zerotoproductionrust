@@ -1,12 +1,14 @@
+use std::net::TcpListener;
+
+use actix_web::{App, HttpServer, web};
+use actix_web::dev::Server;
+use sqlx::PgPool;
+use sqlx::postgres::PgPoolOptions;
+use tracing_actix_web::TracingLogger;
+
 use crate::configuration::{DatabaseSettings, Settings};
 use crate::email_client::EmailClient;
-use crate::routes::{confirm, health_check, subscribe};
-use actix_web::dev::Server;
-use actix_web::{web, App, HttpServer};
-use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
-use std::net::TcpListener;
-use tracing_actix_web::TracingLogger;
+use crate::routes::{confirm, health_check, publish_newsletter, subscribe};
 
 pub struct ApplicationBaseUrl(pub String);
 pub struct Application {
@@ -76,6 +78,7 @@ pub fn run(
             .route("/health_check", web::get().to(health_check))
             .route("/subscriptions", web::post().to(subscribe))
             .route("/subscriptions/confirm", web::get().to(confirm))
+            .route("/newsletters", web::post().to(publish_newsletter))
             .app_data(db_pool.clone())
             .app_data(email_client.clone())
             .app_data(base_url.clone())

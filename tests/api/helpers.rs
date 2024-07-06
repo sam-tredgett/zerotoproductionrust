@@ -2,8 +2,9 @@ use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
-use zerotoproduction::configuration::{get_configuration, DatabaseSettings};
-use zerotoproduction::startup::{get_connection_pool, Application};
+
+use zerotoproduction::configuration::{DatabaseSettings, get_configuration};
+use zerotoproduction::startup::{Application, get_connection_pool};
 use zerotoproduction::telemetry::{get_subscriber, init_subscriber};
 
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -22,7 +23,7 @@ static TRACING: Lazy<()> = Lazy::new(|| {
 /// Confirmation Links embedded in request to the email API
 pub struct ConfirmationLinks {
     pub html: reqwest::Url,
-    pub plain_text: reqwest::Url
+    pub plain_text: reqwest::Url,
 }
 pub struct TestApp {
     pub address: String,
@@ -32,13 +33,8 @@ pub struct TestApp {
 }
 
 impl TestApp {
-    pub fn get_confirmation_links(
-        &self,
-        email_request: &wiremock::Request
-    ) -> ConfirmationLinks {
-        let body: serde_json::Value = serde_json::from_slice(
-            &email_request.body
-        ).unwrap();
+    pub fn get_confirmation_links(&self, email_request: &wiremock::Request) -> ConfirmationLinks {
+        let body: serde_json::Value = serde_json::from_slice(&email_request.body).unwrap();
 
         let get_link = |s: &str| {
             let links: Vec<_> = linkify::LinkFinder::new()
@@ -55,10 +51,7 @@ impl TestApp {
 
         let html = get_link(&body["HtmlBody"].as_str().unwrap());
         let plain_text = get_link(&body["TextBody"].as_str().unwrap());
-        ConfirmationLinks {
-            html,
-            plain_text
-        }
+        ConfirmationLinks { html, plain_text }
     }
     pub async fn post_subscriptions(&self, body: String) -> reqwest::Response {
         reqwest::Client::new()
@@ -68,6 +61,14 @@ impl TestApp {
             .send()
             .await
             .expect("Failed to execute request")
+    }
+    pub async fn post_newsletters(&self, body: serde_json::Value) -> reqwest::Response {
+        reqwest::Client::new()
+            .post(&format!("{}/newsletters", &self.address))
+            .json(&body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
     }
 }
 
@@ -123,4 +124,3 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
 
     connection_pool
 }
-
