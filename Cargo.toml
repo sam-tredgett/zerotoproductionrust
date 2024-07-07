@@ -12,6 +12,7 @@ path = "src/main.rs"
 name = "zerotoproduction"
 
 [dependencies]
+base64 = "0.21"
 thiserror = "1"
 anyhow = "1"
 unicode-segmentation = "1"
