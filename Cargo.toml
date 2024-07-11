@@ -45,6 +45,7 @@ sqlx = { version = "0.6.2", features = [
     "offline",
 ] }
 urlencoding = "2"
+htmlescape = "0.3"
 
 [dependencies.reqwest]
 version = "0.11"
