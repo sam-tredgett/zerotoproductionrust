@@ -1,4 +1,5 @@
 use validator::validate_email;
+
 #[derive(Debug)]
 pub struct SubscriberEmail(String);
 
@@ -18,12 +19,19 @@ impl AsRef<str> for SubscriberEmail {
     }
 }
 
+impl std::fmt::Display for SubscriberEmail {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::SubscriberEmail;
     use claims::assert_err;
-    use fake::faker::internet::en::SafeEmail;
     use fake::Fake;
+    use fake::faker::internet::en::SafeEmail;
+
+    use super::SubscriberEmail;
 
     #[derive(Debug, Clone)]
     struct ValidEmailFixture(pub String);

@@ -1,11 +1,11 @@
 use std::fmt::Formatter;
 
-use actix_web::{HttpResponse, ResponseError, web};
 use actix_web::http::StatusCode;
+use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use chrono::Utc;
-use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
 
@@ -131,7 +131,7 @@ pub async fn send_confirmation_email(
         confirmation_link
     );
     email_client
-        .send_email(new_subscriber.email, "Welcome!", html_body, plain_body)
+        .send_email(&new_subscriber.email, "Welcome!", html_body, plain_body)
         .await
 }
 

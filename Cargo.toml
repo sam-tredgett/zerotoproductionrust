@@ -12,6 +12,7 @@ path = "src/main.rs"
 name = "zerotoproduction"
 
 [dependencies]
+base64 = "0.21"
 thiserror = "1"
 anyhow = "1"
 unicode-segmentation = "1"
@@ -32,6 +33,9 @@ tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1"
 once_cell = "1"
 secrecy = { version = "0.8", features = ["serde"] }
+rand = { version = "0.8", features = ["std_rng"] }
+argon2 = { version = "0.4", features = ["std"] }
+sha3 = "0.9"
 sqlx = { version = "0.6.2", features = [
     "runtime-tokio-rustls",
     "chrono",
@@ -40,12 +44,17 @@ sqlx = { version = "0.6.2", features = [
     "macros",
     "offline",
 ] }
-rand = { version = "0.8", features = ["std_rng"] }
+urlencoding = "2"
+htmlescape = "0.3"
+hmac = { version = "0.12", features = ["std"] }
+sha2 = "0.10"
+hex = "0.4"
+actix-web-flash-messages = { version = "0.4", features = ["cookies"] }
 
 [dependencies.reqwest]
 version = "0.11"
 default-features = false
-features = ["json", "rustls-tls"]
+features = ["json", "rustls-tls", "cookies"]
 
 [dev-dependencies]
 claims = "0.7"
