@@ -1,12 +1,12 @@
-use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
 use argon2::password_hash::SaltString;
+use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
 
-use zerotoproduction::configuration::{DatabaseSettings, get_configuration};
-use zerotoproduction::startup::{Application, get_connection_pool};
+use zerotoproduction::configuration::{get_configuration, DatabaseSettings};
+use zerotoproduction::startup::{get_connection_pool, Application};
 use zerotoproduction::telemetry::{get_subscriber, init_subscriber};
 
 static TRACING: Lazy<()> = Lazy::new(|| {
